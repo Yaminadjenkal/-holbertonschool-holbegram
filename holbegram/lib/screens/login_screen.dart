@@ -1,0 +1,1 @@
+ers/macbook/Desktop/138de426ea182abb86ae90b76e6517ab4794ba2a.jpg'

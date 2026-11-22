@@ -1,1 +1,10 @@
-ers/macbook/Desktop/b15f8b2a55c6d8ba52fe0adf343bc5acd40a2ceb.jpg'
+import 'package:flutter/material.dart';
+
+class UploadImageScreen extends StatelessWidget {
+  const UploadImageScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold();
+  }
+}

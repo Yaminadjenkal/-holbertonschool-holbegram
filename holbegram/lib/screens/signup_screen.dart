@@ -1,1 +1,10 @@
-ers/macbook/Desktop/c8e3e89811dfc10d61c27bf5be23cfbf1eb8ca99.jpg'
+import 'package:flutter/material.dart';
+
+class SignupScreen extends StatelessWidget {
+  const SignupScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold();
+  }
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/text_field.dart';
+import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -66,8 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: emailController,
                     ispassword: false,
                     hintText: 'Email',
-                    keyboardType:
-                        TextInputType.emailAddress,
+                    keyboardType: TextInputType.emailAddress,
                   ),
 
                   const SizedBox(height: 24),
@@ -76,8 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: passwordController,
                     ispassword: !_passwordVisible,
                     hintText: 'Password',
-                    keyboardType:
-                        TextInputType.visiblePassword,
+                    keyboardType: TextInputType.visiblePassword,
                     suffixIcon: IconButton(
                       alignment: Alignment.bottomLeft,
                       icon: Icon(
@@ -123,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 24),
 
-                  const Row(
+                  Row(
                     mainAxisAlignment:
                         MainAxisAlignment.center,
                     children: const [
@@ -133,8 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text(
                         'Get help logging in',
                         style: TextStyle(
-                          fontWeight:
-                              FontWeight.bold,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
@@ -147,8 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: 12,
                     ),
                     child: Row(
@@ -159,14 +156,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           "Don't have an account ",
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const SignUp(),
+                              ),
+                            );
+                          },
                           child: const Text(
                             'Sign up',
                             style: TextStyle(
                               fontWeight:
                                   FontWeight.bold,
-                              color:
-                                  Color.fromARGB(
+                              color: Color.fromARGB(
                                 218,
                                 226,
                                 37,
@@ -179,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
 
-                  const Row(
+                  Row(
                     children: const [
                       Flexible(
                         child: Divider(
@@ -187,8 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 8,
                         ),
                         child: Text('OR'),
@@ -204,8 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 10),
 
                   Row(
-                    mainAxisSize:
-                        MainAxisSize.min,
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment:
                         MainAxisAlignment.center,
                     children: [

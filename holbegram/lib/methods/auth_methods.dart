@@ -6,31 +6,26 @@ import 'package:http/http.dart' as http;
 
 class StorageMethods {
   final String cloudinaryUrl =
-      "https://api.cloudinary.com/v1_1/your-cloud-name/image/upload";
+      'https://api.cloudinary.com/v1_1/your-cloud-name/image/upload';
 
   final String cloudinaryPreset =
-      "your-upload-preset";
+      'your-upload-preset';
 
   Future<String> uploadImageToStorage(
     bool isPost,
     String childName,
     Uint8List file,
   ) async {
-    String uniqueId =
-        const Uuid().v1();
+    String uniqueId = const Uuid().v1();
 
-    var uri = Uri.parse(
-      cloudinaryUrl,
-    );
+    var uri = Uri.parse(cloudinaryUrl);
 
-    var request =
-        http.MultipartRequest(
+    var request = http.MultipartRequest(
       'POST',
       uri,
     );
 
-    request.fields[
-        'upload_preset'] =
+    request.fields['upload_preset'] =
         cloudinaryPreset;
 
     request.fields['folder'] =
@@ -43,8 +38,7 @@ class StorageMethods {
         http.MultipartFile.fromBytes(
       'file',
       file,
-      filename:
-          '$uniqueId.jpg',
+      filename: '$uniqueId.jpg',
     );
 
     request.files.add(
@@ -54,14 +48,11 @@ class StorageMethods {
     var response =
         await request.send();
 
-    if (response.statusCode ==
-        200) {
+    if (response.statusCode == 200) {
       var responseData =
-          await response.stream
-              .toBytes();
+          await response.stream.toBytes();
 
-      var jsonResponse =
-          jsonDecode(
+      var jsonResponse = jsonDecode(
         String.fromCharCodes(
           responseData,
         ),

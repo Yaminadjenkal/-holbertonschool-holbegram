@@ -1,85 +1,78 @@
 import 'dart:typed_data';
+import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
-import '../models/user.dart';
+class StorageMethods {
+  final String cloudinaryUrl =
+      "https://api.cloudinary.com/v1_1/your-cloud-name/image/upload";
 
-class AuthMethod {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore =
-      FirebaseFirestore.instance;
+  final String cloudinaryPreset =
+      "your-upload-preset";
 
-  Future<String> login({
-    required String email,
-    required String password,
-  }) async {
-    String res = "Some error occurred";
+  Future<String> uploadImageToStorage(
+    bool isPost,
+    String childName,
+    Uint8List file,
+  ) async {
+    String uniqueId =
+        const Uuid().v1();
 
-    try {
-      if (email.isEmpty || password.isEmpty) {
-        return "Please fill all the fields";
-      }
+    var uri = Uri.parse(
+      cloudinaryUrl,
+    );
 
-      await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+    var request =
+        http.MultipartRequest(
+      'POST',
+      uri,
+    );
+
+    request.fields[
+        'upload_preset'] =
+        cloudinaryPreset;
+
+    request.fields['folder'] =
+        childName;
+
+    request.fields['public_id'] =
+        isPost ? uniqueId : '';
+
+    var multipartFile =
+        http.MultipartFile.fromBytes(
+      'file',
+      file,
+      filename:
+          '$uniqueId.jpg',
+    );
+
+    request.files.add(
+      multipartFile,
+    );
+
+    var response =
+        await request.send();
+
+    if (response.statusCode ==
+        200) {
+      var responseData =
+          await response.stream
+              .toBytes();
+
+      var jsonResponse =
+          jsonDecode(
+        String.fromCharCodes(
+          responseData,
+        ),
       );
 
-      res = "success";
-    } catch (e) {
-      res = e.toString();
+      return jsonResponse[
+          'secure_url'];
+    } else {
+      throw Exception(
+        'Failed to upload image to Cloudinary',
+      );
     }
-
-    return res;
-  }
-
-  Future<String> signUpUser({
-    required String email,
-    required String password,
-    required String username,
-    Uint8List? file,
-  }) async {
-    String res = "Some error occurred";
-
-    try {
-      if (email.isEmpty ||
-          password.isEmpty ||
-          username.isEmpty) {
-        return "Please fill all the fields";
-      }
-
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      User? user = userCredential.user;
-
-      Users users = Users(
-        uid: user!.uid,
-        email: email,
-        username: username,
-        bio: '',
-        photoUrl: '',
-        followers: [],
-        following: [],
-        posts: [],
-        saved: [],
-        searchKey: username[0].toUpperCase(),
-      );
-
-      await _firestore
-          .collection("users")
-          .doc(user.uid)
-          .set(users.toJson());
-
-      res = "success";
-    } catch (e) {
-      res = e.toString();
-    }
-
-    return res;
   }
 }

@@ -28,27 +28,37 @@ class _PostsState extends State<Posts> {
 
         if (!snapshot.hasData) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child:
+                CircularProgressIndicator(),
           );
         }
 
-        var data = snapshot.data!.docs;
+        var data =
+            snapshot.data!.docs;
 
         return ListView.builder(
           itemCount: data.length,
-          itemBuilder: (context, index) {
+          itemBuilder: (
+            context,
+            index,
+          ) {
             final post = data[index];
 
             return SingleChildScrollView(
               child: Container(
-                margin: EdgeInsetsGeometry.lerp(
-                  const EdgeInsets.all(8),
-                  const EdgeInsets.all(8),
+                margin:
+                    EdgeInsetsGeometry.lerp(
+                  const EdgeInsets.all(
+                      8),
+                  const EdgeInsets.all(
+                      8),
                   10,
                 ),
                 height: 540,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(
+                decoration:
+                    BoxDecoration(
+                  color:
+                      const Color.fromARGB(
                     255,
                     255,
                     255,
@@ -65,16 +75,19 @@ class _PostsState extends State<Posts> {
                       children: [
                         Padding(
                           padding:
-                              const EdgeInsets.all(
+                              const EdgeInsets
+                                  .all(
                             8.0,
                           ),
-                          child: Container(
+                          child:
+                              Container(
                             width: 40,
                             height: 40,
                             decoration:
                                 BoxDecoration(
                               shape:
-                                  BoxShape.circle,
+                                  BoxShape
+                                      .circle,
                               image:
                                   DecorationImage(
                                 image:
@@ -82,50 +95,57 @@ class _PostsState extends State<Posts> {
                                   post[
                                       'profImage'],
                                 ),
-                                fit: BoxFit.cover,
+                                fit: BoxFit
+                                    .cover,
                               ),
                             ),
                           ),
                         ),
                         Text(
-                          post['username'],
+                          post[
+                              'username'],
                         ),
                         const Spacer(),
                         IconButton(
-                          onPressed: () async {
+                          onPressed:
+                              () async {
                             await PostStorage()
                                 .deletePost(
-                              post['postId'],
+                              post[
+                                  'postId'],
                               '',
                             );
+
+                            if (!context
+                                .mounted) {
+                              return;
+                            }
 
                             ScaffoldMessenger.of(
                                     context)
                                 .showSnackBar(
                               const SnackBar(
-                                content: Text(
+                                content:
+                                    Text(
                                   'Post Deleted',
                                 ),
                               ),
                             );
                           },
-                          icon: const Icon(
-                            Icons.more_horiz,
+                          icon:
+                              const Icon(
+                            Icons
+                                .more_horiz,
                           ),
                         ),
                       ],
                     ),
-
-                    SizedBox(
-                      child: Text(
-                        post['caption'],
-                      ),
+                    Text(
+                      post['caption'],
                     ),
-
                     const SizedBox(
                       height: 10,
                     ),
-
                     Container(
                       width: 350,
                       height: 350,
@@ -140,18 +160,17 @@ class _PostsState extends State<Posts> {
                             DecorationImage(
                           image:
                               NetworkImage(
-                            post['postUrl'],
+                            post[
+                                'postUrl'],
                           ),
                           fit:
                               BoxFit.cover,
                         ),
                       ),
                     ),
-
                     const SizedBox(
                       height: 10,
                     ),
-
                     const Row(
                       mainAxisAlignment:
                           MainAxisAlignment

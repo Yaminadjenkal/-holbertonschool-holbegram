@@ -65,8 +65,6 @@ class PostStorage {
           .collection('posts')
           .doc(postId)
           .delete();
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
   }
 }

@@ -1,117 +1,66 @@
 import 'dart:typed_data';
+import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
-class AddPicture extends StatefulWidget {
-  final String email;
-  final String password;
-  final String username;
+class StorageMethods {
+  final String cloudinaryUrl =
+      'https://api.cloudinary.com/v1_1/your-cloud-name/image/upload';
 
-  const AddPicture({
-    super.key,
-    required this.email,
-    required this.password,
-    required this.username,
-  });
+  final String cloudinaryPreset =
+      'your-upload-preset';
 
-  @override
-  State<AddPicture> createState() => _AddPictureState();
-}
+  Future<String> uploadImageToStorage(
+    bool isPost,
+    String childName,
+    Uint8List file,
+  ) async {
+    String uniqueId = const Uuid().v1();
 
-class _AddPictureState extends State<AddPicture> {
-  Uint8List? _image;
+    var uri = Uri.parse(cloudinaryUrl);
 
-  Future<void> selectImageFromGallery() async {
-    final ImagePicker picker = ImagePicker();
-
-    XFile? file = await picker.pickImage(
-      source: ImageSource.gallery,
+    var request = http.MultipartRequest(
+      'POST',
+      uri,
     );
 
-    if (file != null) {
-      Uint8List imageBytes =
-          await file.readAsBytes();
+    request.fields['upload_preset'] =
+        cloudinaryPreset;
 
-      setState(() {
-        _image = imageBytes;
-      });
-    }
-  }
+    request.fields['folder'] =
+        childName;
 
-  Future<void> selectImageFromCamera() async {
-    final ImagePicker picker = ImagePicker();
+    request.fields['public_id'] =
+        isPost ? uniqueId : '';
 
-    XFile? file = await picker.pickImage(
-      source: ImageSource.camera,
+    var multipartFile =
+        http.MultipartFile.fromBytes(
+      'file',
+      file,
+      filename: '$uniqueId.jpg',
     );
 
-    if (file != null) {
-      Uint8List imageBytes =
-          await file.readAsBytes();
+    request.files.add(multipartFile);
 
-      setState(() {
-        _image = imageBytes;
-      });
+    var response =
+        await request.send();
+
+    if (response.statusCode == 200) {
+      var responseData =
+          await response.stream.toBytes();
+
+      var jsonResponse = jsonDecode(
+        String.fromCharCodes(
+          responseData,
+        ),
+      );
+
+      return jsonResponse['secure_url'];
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Add Picture',
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 80,
-              backgroundImage: _image != null
-                  ? MemoryImage(_image!)
-                  : null,
-              child: _image == null
-                  ? const Icon(
-                      Icons.person,
-                      size: 80,
-                    )
-                  : null,
-            ),
-
-            const SizedBox(height: 30),
-
-            Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed:
-                      selectImageFromCamera,
-                  icon: const Icon(
-                    Icons.camera_alt,
-                    size: 40,
-                  ),
-                ),
-
-                const SizedBox(width: 30),
-
-                IconButton(
-                  onPressed:
-                      selectImageFromGallery,
-                  icon: const Icon(
-                    Icons.photo,
-                    size: 40,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+    throw Exception(
+      'Failed to upload image to Cloudinary',
     );
   }
 }

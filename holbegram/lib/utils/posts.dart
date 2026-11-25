@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/pages/methods/post_storage.dart';
+
 class Posts extends StatefulWidget {
   const Posts({super.key});
 
@@ -26,37 +28,27 @@ class _PostsState extends State<Posts> {
 
         if (!snapshot.hasData) {
           return const Center(
-            child:
-                CircularProgressIndicator(),
+            child: CircularProgressIndicator(),
           );
         }
 
-        var data =
-            snapshot.data!.docs;
+        var data = snapshot.data!.docs;
 
         return ListView.builder(
           itemCount: data.length,
-          itemBuilder: (
-            context,
-            index,
-          ) {
+          itemBuilder: (context, index) {
             final post = data[index];
 
             return SingleChildScrollView(
               child: Container(
-                margin:
-                    EdgeInsetsGeometry.lerp(
-                  const EdgeInsets.all(
-                      8),
-                  const EdgeInsets.all(
-                      8),
+                margin: EdgeInsetsGeometry.lerp(
+                  const EdgeInsets.all(8),
+                  const EdgeInsets.all(8),
                   10,
                 ),
                 height: 540,
-                decoration:
-                    BoxDecoration(
-                  color:
-                      const Color.fromARGB(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(
                     255,
                     255,
                     255,
@@ -64,76 +56,76 @@ class _PostsState extends State<Posts> {
                   ),
                   borderRadius:
                       BorderRadius.circular(
-                          25),
+                    25,
+                  ),
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets
-                                    .all(
-                                    8.0),
-                            child:
-                                Container(
-                              width: 40,
-                              height: 40,
-                              decoration:
-                                  BoxDecoration(
-                                shape:
-                                    BoxShape.circle,
+                    Row(
+                      children: [
+                        Padding(
+                          padding:
+                              const EdgeInsets.all(
+                            8.0,
+                          ),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration:
+                                BoxDecoration(
+                              shape:
+                                  BoxShape.circle,
+                              image:
+                                  DecorationImage(
                                 image:
-                                    DecorationImage(
-                                  image:
-                                      NetworkImage(
-                                    post[
-                                        'profImage'],
-                                  ),
-                                  fit: BoxFit
-                                      .cover,
+                                    NetworkImage(
+                                  post[
+                                      'profImage'],
                                 ),
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
-                          Text(
-                            post[
-                                'username'],
-                          ),
-                          const Spacer(),
-                          IconButton(
-                            onPressed:
-                                () {
-                              ScaffoldMessenger.of(
-                                      context)
-                                  .showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      Text(
-                                    'Post Deleted',
-                                  ),
+                        ),
+                        Text(
+                          post['username'],
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () async {
+                            await PostStorage()
+                                .deletePost(
+                              post['postId'],
+                              '',
+                            );
+
+                            ScaffoldMessenger.of(
+                                    context)
+                                .showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Post Deleted',
                                 ),
-                              );
-                            },
-                            icon:
-                                const Icon(
-                              Icons
-                                  .more_horiz,
-                            ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.more_horiz,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+
                     SizedBox(
                       child: Text(
-                        post[
-                            'caption'],
+                        post['caption'],
                       ),
                     ),
+
                     const SizedBox(
                       height: 10,
                     ),
+
                     Container(
                       width: 350,
                       height: 350,
@@ -142,19 +134,24 @@ class _PostsState extends State<Posts> {
                         borderRadius:
                             BorderRadius
                                 .circular(
-                                    25),
+                          25,
+                        ),
                         image:
                             DecorationImage(
                           image:
                               NetworkImage(
-                            post[
-                                'postUrl'],
+                            post['postUrl'],
                           ),
                           fit:
                               BoxFit.cover,
                         ),
                       ),
                     ),
+
+                    const SizedBox(
+                      height: 10,
+                    ),
+
                     const Row(
                       mainAxisAlignment:
                           MainAxisAlignment

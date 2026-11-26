@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../auth/methods/user_storage.dart';
@@ -37,8 +38,7 @@ class PostStorage {
         username: username,
         likes: [],
         postId: postId,
-        datePublished:
-            DateTime.now(),
+        datePublished: DateTime.now(),
         postUrl: photoUrl,
         profImage: profImage,
       );
@@ -65,6 +65,22 @@ class PostStorage {
           .collection('posts')
           .doc(postId)
           .delete();
-    } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> savePost(
+    String uid,
+    String postId,
+  ) async {
+    await _firestore
+        .collection('users')
+        .doc(uid)
+        .update({
+      'saved': FieldValue.arrayUnion(
+        [postId],
+      ),
+    });
   }
 }

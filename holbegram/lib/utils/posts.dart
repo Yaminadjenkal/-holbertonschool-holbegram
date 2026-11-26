@@ -33,37 +33,26 @@ class _PostsState extends State<Posts> {
           );
         }
 
-        var data =
+        final data =
             snapshot.data!.docs;
 
         return ListView.builder(
           itemCount: data.length,
-          itemBuilder: (
-            context,
-            index,
-          ) {
-            final post = data[index];
+          itemBuilder:
+              (context, index) {
+            final post =
+                data[index];
 
             return SingleChildScrollView(
               child: Container(
                 margin:
-                    EdgeInsetsGeometry.lerp(
-                  const EdgeInsets.all(
-                      8),
-                  const EdgeInsets.all(
-                      8),
-                  10,
+                    const EdgeInsets.all(
+                  8,
                 ),
                 height: 540,
                 decoration:
                     BoxDecoration(
-                  color:
-                      const Color.fromARGB(
-                    255,
-                    255,
-                    255,
-                    255,
-                  ),
+                  color: Colors.white,
                   borderRadius:
                       BorderRadius.circular(
                     25,
@@ -86,8 +75,7 @@ class _PostsState extends State<Posts> {
                             decoration:
                                 BoxDecoration(
                               shape:
-                                  BoxShape
-                                      .circle,
+                                  BoxShape.circle,
                               image:
                                   DecorationImage(
                                 image:
@@ -95,8 +83,8 @@ class _PostsState extends State<Posts> {
                                   post[
                                       'profImage'],
                                 ),
-                                fit: BoxFit
-                                    .cover,
+                                fit:
+                                    BoxFit.cover,
                               ),
                             ),
                           ),
@@ -171,22 +159,38 @@ class _PostsState extends State<Posts> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Row(
+                    Row(
                       mainAxisAlignment:
                           MainAxisAlignment
                               .spaceEvenly,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.favorite,
                         ),
-                        Icon(
+                        const Icon(
                           Icons.comment,
                         ),
-                        Icon(
+                        const Icon(
                           Icons.send,
                         ),
-                        Icon(
-                          Icons.bookmark,
+                        IconButton(
+                          onPressed:
+                              () {
+                            ScaffoldMessenger.of(
+                                    context)
+                                .showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text(
+                                  'Post Saved',
+                                ),
+                              ),
+                            );
+                          },
+                          icon:
+                              const Icon(
+                            Icons.bookmark,
+                          ),
                         ),
                       ],
                     ),
